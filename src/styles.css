@@ -1,0 +1,97 @@
+/*Обнуление*/
+*,
+p {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+  font-family: "Montserrat", "Times New Roman", Times, serif;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+}
+
+html,
+body,
+.app {
+  height: 100vh;
+
+  color: #111111;
+}
+
+a,
+a:visited {
+  text-decoration: none;
+}
+
+ul,
+li {
+  margin: 0;
+}
+button {
+  cursor: pointer;
+}
+
+input {
+  border: 1px solid black;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+/* general styles */
+
+.app {
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 1182px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+}
+
+/* nav-menu */
+
+.nav-menu-wrapper {
+  width: 260px;
+  position: fixed;
+}
+
+/* route-cards */
+.route-cards-wrapper {
+  margin: 0 260px;
+}
+
+/* route-card */
+
+.route-card {
+  width: 500px;
+  margin-bottom: 10px;
+
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.route-card-top {
+  background-color: #0087c9;
+  display: flex;
+}
+
+.route-card-info {
+  display: flex;
+  flex-direction: column;
+}
