@@ -17,9 +17,9 @@
       :leg="leg"
     >
     </flight-details>
-    <button class="btn btn-choose">show flight details</button>
-    <button @click="handleClick">show flight details</button>
-    <button @click="handleClick2">show more flight details</button>
+    <button class="btn btn-choose">choose</button>
+    <!-- <button @click="handleClick">show flight details</button>
+    <button @click="handleClick2">show more flight details</button> -->
   </div>
 </template>
 

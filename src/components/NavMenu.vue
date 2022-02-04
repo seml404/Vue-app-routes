@@ -4,22 +4,57 @@
       <p class="nav-menu-title">Сортировать</p>
       <div class="inputs-wrapper">
         <div class="input-wrapper">
-          <input type="radio" /> - по возрастанию цены
+          <input
+            type="radio"
+            name="filter-radio-btn"
+            v-model="sorting"
+            value="priceIncrease"
+            @change="handleSetSorting"
+          />
+          - по возрастанию цены
         </div>
         <div class="input-wrapper">
-          <input type="radio" /> - по убыванию цены
+          <input
+            type="radio"
+            name="filter-radio-btn"
+            v-model="sorting"
+            value="priceDecrease"
+            @change="handleSetSorting"
+          />
+          - по убыванию цены
         </div>
         <div class="input-wrapper">
-          <input type="radio" /> - по времени в пути
+          <input
+            type="radio"
+            name="filter-radio-btn"
+            v-model="sorting"
+            value="travelTime"
+            @change="handleSetSorting"
+          />
+          - по времени в пути
         </div>
       </div>
     </div>
     <div class="nav-menu-section">
       <p class="nav-menu-title">Фильтровать</p>
       <div class="inputs-wrapper">
-        <div class="input-wrapper"><input type="checkbox" /> - 1 пересадка</div>
         <div class="input-wrapper">
-          <input type="checkbox" /> - без пересадок
+          <input
+            type="checkbox"
+            value="oneEchange"
+            v-model="filter.oneExchange"
+            @change="handleSetFilter"
+          />
+          - 1 пересадка
+        </div>
+        <div class="input-wrapper">
+          <input
+            type="checkbox"
+            value="noEchanges"
+            v-model="filter.noEchanges"
+            @change="handleSetFilter"
+          />
+          - без пересадок
         </div>
       </div>
     </div>
@@ -28,20 +63,24 @@
       <div class="inputs-wrapper">
         <div class="input-wrapper">
           <p>От</p>
-          <input type="number" />
+          <input type="number" v-model="price.from" @change="handleSetPrice" />
         </div>
         <div class="input-wrapper">
           <p>До</p>
-          <input type="number" />
+          <input type="number" v-model="price.till" @change="handleSetPrice" />
         </div>
       </div>
     </div>
     <div class="nav-menu-section">
       <p class="nav-menu-title">Авиакомпании</p>
       <div class="inputs-wrapper">
-        <div class="input-wrapper"><input type="checkbox" /> - 1 пересадка</div>
-        <div class="input-wrapper">
-          <input type="checkbox" /> - без пересадок
+        <div
+          class="input-wrapper"
+          v-for="company in airCompanies"
+          :key="company"
+        >
+          <input type="checkbox" />
+          - {{ company }}
         </div>
       </div>
     </div>
@@ -49,7 +88,31 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      sorting: "",
+      filter: { noEchanges: false, oneExchange: false },
+      price: { from: null, till: null },
+      airCompany: {},
+    };
+  },
+  methods: {
+    handleSetSorting() {
+      this.$emit("handleSetSorting", this.sorting);
+    },
+    handleSetFilter() {
+      this.$emit("handleSetFilter", this.filter);
+    },
+    handleSetPrice() {
+      this.$emit("handleSetPrice", this.price);
+    },
+    handleSetAirCompany() {
+      console.log(this.airCompany);
+    },
+  },
+  props: ["airCompanies"],
+};
 </script>
 
 <style lang="scss" scoped></style>
