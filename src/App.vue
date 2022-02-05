@@ -13,10 +13,13 @@
         </div>
         <div class="route-cards-wrapper">
           <route-card
-            v-for="(flight, idx) in flightsData"
+            v-for="(flight, idx) in flightsDataToRender"
             :key="idx"
             :flightData="flight.flight"
           />
+          <button @click="handlePaginate" class="btn btn-load">
+            Показать еще
+          </button>
         </div>
       </div>
     </div>
@@ -68,6 +71,13 @@ export default {
       console.log(amendedArr.length);
       return amendedArr;
     },
+    // методы для работы с пагинацией
+    flightsDataProcessed() {
+      return this.flightsData;
+    },
+    flightsDataToRender() {
+      return this.flightsDataProcessed.slice(0, this.flightsDataPaginationIdx);
+    },
   },
   data() {
     return {
@@ -76,6 +86,7 @@ export default {
       filter: { noEchanges: false, oneExchange: false },
       price: { from: null, till: null },
       airCompany: [],
+      flightsDataPaginationIdx: 3,
     };
   },
   components: { RouteCard, NavMenu },
@@ -90,7 +101,6 @@ export default {
       this.price = value;
     },
     setAirCompany(value) {
-      console.log("setting");
       this.airCompany = value;
     },
     // метод сортировки рейсов по возрастанию/убыванию цены и по времени в пути
@@ -125,6 +135,7 @@ export default {
     },
     // метод фильтрации рейсов по авиаперевозчику
     filterAirCompany(arr, values) {
+      this.flightsDataPaginationIdx = 3;
       arr = arr.filter((item) => {
         return values.includes(item.flight.carrier.caption);
       });
@@ -132,6 +143,7 @@ export default {
     },
     // метод фильтрации рейсов по пересадкам
     filterChanges(item, value1, value2) {
+      this.flightsDataPaginationIdx = 3;
       let checkRes = [];
       item.flight.legs.forEach((leg) => {
         if (
@@ -147,6 +159,7 @@ export default {
     },
     // метод фильтрации рейсов по цене
     filterPrice(arr, startPrice, endPrice) {
+      this.flightsDataPaginationIdx = 3;
       if (startPrice) {
         arr = arr.filter((item) => {
           return +item.flight.price.totalFeeAndTaxes.amount > +startPrice;
@@ -158,6 +171,23 @@ export default {
         });
       }
       return arr;
+    },
+    // обработчик нажатия кнопки для пагинации
+    handlePaginate() {
+      let idxToAdd;
+      if (
+        this.flightsDataPaginationIdx ===
+        this.flightsDataProcessed.length - 1
+      ) {
+        return;
+      }
+      idxToAdd =
+        this.flightsDataPaginationIdx + 3 < this.flightsDataProcessed.length - 1
+          ? 3
+          : this.flightsDataProcessed.length -
+            1 -
+            this.flightsDataPaginationIdx;
+      this.flightsDataPaginationIdx += idxToAdd;
     },
   },
 };
