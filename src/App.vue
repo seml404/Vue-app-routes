@@ -11,7 +11,7 @@
             @handleSetAirCompany="setAirCompany"
           />
         </div>
-        <div class="route-cards-wrapper">
+        <div class="route-cards-wrapper" v-if="flightsDataToRender.length > 0">
           <route-card
             v-for="(flight, idx) in flightsDataToRender"
             :key="idx"
@@ -20,6 +20,9 @@
           <button @click="handlePaginate" class="btn btn-load">
             Показать еще
           </button>
+        </div>
+        <div class="route-cards-wrapper" v-else>
+          <p>Рейсы по заданным условиям не обнаружены</p>
         </div>
       </div>
     </div>
@@ -42,7 +45,7 @@ export default {
         }
       });
       return list.sort((val1, val2) => {
-        return val1[0] < val2[0] ? -1 : 1;
+        return val1 < val2 ? -1 : 1;
       });
     },
     // метод формирования перечня рейсов, вызывающий методы для их фильтрации/сортировки
