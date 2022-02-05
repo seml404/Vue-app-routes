@@ -79,7 +79,11 @@
           v-for="company in airCompanies"
           :key="company"
         >
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            @change="handleSetAirCompany"
+            :value="company"
+          />
           - {{ company }}
         </div>
       </div>
@@ -94,7 +98,7 @@ export default {
       sorting: "",
       filter: { noEchanges: false, oneExchange: false },
       price: { from: null, till: null },
-      airCompany: {},
+      airCompany: [],
     };
   },
   methods: {
@@ -107,8 +111,13 @@ export default {
     handleSetPrice() {
       this.$emit("handleSetPrice", this.price);
     },
-    handleSetAirCompany() {
-      console.log(this.airCompany);
+    handleSetAirCompany(e) {
+      this.airCompany.includes(e.target.value)
+        ? (this.airCompany = this.airCompany.filter(
+            (item) => item !== e.target.value
+          ))
+        : this.airCompany.push(e.target.value);
+      this.$emit("handleSetAirCompany", this.airCompany);
     },
   },
   props: ["airCompanies"],

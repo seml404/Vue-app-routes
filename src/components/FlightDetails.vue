@@ -8,7 +8,7 @@
       <p class="route-card-destination-uid">
         ({{ leg.segments[0]?.departureAirport?.uid }})
       </p>
-      <div>arrow</div>
+      <div class="route-card-destination-uid">&#8594;</div>
       <p class="route-card-destination">
         {{ leg.segments[leg.segments?.length - 1]?.arrivalCity?.caption }}
         {{ leg.segments[leg.segments?.length - 1]?.arrivalAirport?.caption }}
@@ -24,31 +24,31 @@
             departureDate.hour > 9
               ? departureDate.hour
               : `0` + departureDate.hour
-          }}ч{{
+          }}
+          ч
+          {{
             departureDate.minute > 9
               ? departureDate.minute
               : `0` + departureDate.minute
-          }}мин
+          }}
+          мин
         </p>
         <p class="route-card-date">
           {{ departureDateDay }}
         </p>
       </div>
       <div class="route-card-duration">
-        <img src="#" alt="clock" class="clock-img" />
-        <p>
-          Длительность {{ flightDurationHours }} ч {{ flightDurationMinutes }} -
-          мин.
-        </p>
+        <div class="route-card-clock-img">
+          <img :src="clockImg" alt="" />
+        </div>
+        <p>{{ flightDurationHours }} ч {{ flightDurationMinutes }} - мин.</p>
       </div>
       <div class="route-card-time-info route-card-time-info-arrival">
+        {{ arrivalDate.hour > 9 ? arrivalDate.hour : `0` + arrivalDate.hour }} ч
         {{
-          arrivalDate.hour > 9 ? arrivalDate.hour : `0` + arrivalDate.hour
-        }}ч{{
-          arrivalDate.minute > 9
-            ? arrivalDate.minute
-            : `0` + arrivalDate.minute
-        }}мин
+          arrivalDate.minute > 9 ? arrivalDate.minute : `0` + arrivalDate.minute
+        }}
+        мин
         <p class="route-card-date">{{ arrivalDateDay }}</p>
       </div>
     </div>
@@ -63,10 +63,12 @@
 
 <script>
 import { dateObj, localDateObj } from "../luxon";
+import clock from "../assets/clock.png";
 export default {
   props: ["leg"],
   data() {
     return {
+      clockImg: clock,
       localParam: localDateObj.toLocaleString(
         this.leg.segments[0]?.departureDate
       ),
@@ -116,11 +118,7 @@ export default {
       return ending;
     },
   },
-  methods: {
-    // showDate() {
-    //   console.log();
-    // },
-  },
+  methods: {},
 };
 </script>
 

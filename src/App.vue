@@ -8,14 +8,12 @@
             @handleSetSorting="setSorting"
             @handleSetFilter="setFilter"
             @handleSetPrice="setPrice"
+            @handleSetAirCompany="setAirCompany"
           />
         </div>
         <div class="route-cards-wrapper">
-          <button @click="showInfo">show info</button>
-          <button @click="showInfoAir">show air comp</button>
-          <button @click="filterChanges">filter</button>
           <route-card
-            v-for="(flight, idx) in flightsInfo"
+            v-for="(flight, idx) in flightsData"
             :key="idx"
             :flightData="flight.flight"
           />
@@ -32,6 +30,7 @@ import RouteCard from "./components/RouteCard.vue";
 export default {
   name: "App",
   computed: {
+    // метод формирования перечня авиакомпания, для отражения в боковом меню
     listOfAirCompanies() {
       const list = [];
       this.flightsInfo.forEach((item) => {
@@ -43,6 +42,32 @@ export default {
         return val1[0] < val2[0] ? -1 : 1;
       });
     },
+    // метод формирования перечня рейсов, вызывающий методы для их фильтрации/сортировки
+    flightsData() {
+      let amendedArr = this.flightsInfo;
+      if (this.filter.noEchanges || this.filter.oneExchange) {
+        let param1 = this.filter.noEchanges ? 0 : null;
+        let param2 = this.filter.oneExchange ? 1 : null;
+        amendedArr = amendedArr.filter((item) =>
+          this.filterChanges(item, param1, param2)
+        );
+      }
+      if (this.price.from || this.price.till) {
+        amendedArr = this.filterPrice(
+          amendedArr,
+          this.price.from,
+          this.price.till
+        );
+      }
+      if (this.airCompany.length > 0) {
+        amendedArr = this.filterAirCompany(amendedArr, this.airCompany);
+      }
+      if (this.sorting) {
+        amendedArr = this.sortItems(amendedArr, this.sorting);
+      }
+      console.log(amendedArr.length);
+      return amendedArr;
+    },
   },
   data() {
     return {
@@ -50,8 +75,10 @@ export default {
       sorting: null,
       filter: { noEchanges: false, oneExchange: false },
       price: { from: null, till: null },
+      airCompany: [],
     };
   },
+  components: { RouteCard, NavMenu },
   methods: {
     setSorting(value) {
       this.sorting = value;
@@ -62,91 +89,80 @@ export default {
     setPrice(value) {
       this.price = value;
     },
+    setAirCompany(value) {
+      console.log("setting");
+      this.airCompany = value;
+    },
+    // метод сортировки рейсов по возрастанию/убыванию цены и по времени в пути
     sortItems(arr, criteria) {
       switch (criteria) {
         case "priceIncrease":
-          return arr.sort((item1, item2) => {
-            item1.flight.price.totalFeeAndTaxes.amount <
-            item2.flight.price.totalFeeAndTaxes.amount
+          arr = arr.sort((item1, item2) => {
+            return +item1.flight.price.totalFeeAndTaxes.amount <
+              +item2.flight.price.totalFeeAndTaxes.amount
               ? -1
               : 1;
           });
+          return arr;
         case "priceDecrease":
-          return arr.sort((item1, item2) => {
-            item1.flight.price.totalFeeAndTaxes.amount >
-            item2.flight.price.totalFeeAndTaxes.amount
+          arr = arr.sort((item1, item2) => {
+            return +item1.flight.price.totalFeeAndTaxes.amount >
+              +item2.flight.price.totalFeeAndTaxes.amount
               ? -1
               : 1;
           });
-        case "travelTime": {
-          return arr.sort((item1, item2) => {
-            item1.flight.legs.duration > item2.flight.legs.duration ? -1 : 1;
+          return arr;
+        case "travelTime":
+          arr = arr.sort((item1, item2) => {
+            return +item1.flight.legs[0].duration +
+              +item1.flight.legs[1].duration <
+              +item2.flight.legs[0].duration + +item2.flight.legs[1].duration
+              ? -1
+              : 1;
           });
-        }
+          return arr;
       }
     },
-    filterChanges(item, value) {
+    // метод фильтрации рейсов по авиаперевозчику
+    filterAirCompany(arr, values) {
+      arr = arr.filter((item) => {
+        return values.includes(item.flight.carrier.caption);
+      });
+      return arr;
+    },
+    // метод фильтрации рейсов по пересадкам
+    filterChanges(item, value1, value2) {
       let checkRes = [];
       item.flight.legs.forEach((leg) => {
-        if (leg.segments.length - 1 === value) {
+        if (
+          leg.segments.length - 1 === value1 ||
+          leg.segments.length - 1 === value2
+        ) {
           checkRes.push(true);
         } else {
           checkRes.push(false);
         }
       });
-      console.log(checkRes);
       return !checkRes.includes(false);
     },
+    // метод фильтрации рейсов по цене
     filterPrice(arr, startPrice, endPrice) {
       if (startPrice) {
         arr = arr.filter((item) => {
-          item.flight.price.totalFeeAndTaxes > startPrice;
+          return +item.flight.price.totalFeeAndTaxes.amount > +startPrice;
         });
       }
       if (endPrice) {
         arr = arr.filter((item) => {
-          item.flight.price.totalFeeAndTaxes < endPrice;
+          return +item.flight.price.totalFeeAndTaxes.amount < +endPrice;
         });
-        return arr;
       }
-    },
-
-    // filterChanges() {
-    //   function checkFlights(item) {
-    //     let checkRes = [];
-    //     item.flight.legs.forEach((leg) => {
-    //       if (leg.segments.length - 1 === 1) {
-    //         checkRes.push(true);
-    //       } else {
-    //         checkRes.push(false);
-    //       }
-    //     });
-    //     console.log(checkRes);
-    //     return !checkRes.includes(false);
-    //   }
-    //   this.flightsInfo = this.flightsInfo.filter((item) => checkFlights(item));
-    // },
-    showInfo() {
-      console.log(this.flightsInfo);
-    },
-    showInfoAir() {
-      console.log(this.listOfAirCompanies);
+      return arr;
     },
   },
-  components: { RouteCard, NavMenu },
 };
 </script>
 
 <style>
 @import "./styles.css";
-.route-cards-wrapper {
-}
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>

@@ -15,7 +15,7 @@ html,
 body,
 .app {
   height: 100vh;
-
+  font-size: 14pt;
   color: #111111;
 }
 
@@ -52,6 +52,7 @@ input[type="number"] {
 /* general styles */
 
 .app {
+  margin-top: 60px;
   display: flex;
   flex-direction: column;
 }
@@ -90,30 +91,72 @@ input[type="number"] {
 
 /* route-card */
 
+.btn-choose {
+  width: 100%;
+  height: 30px;
+  background: #e69020;
+  color: white;
+}
+
 .route-card {
   width: 100%;
   margin-bottom: 10px;
-
-  border: 1px solid black;
   border-radius: 10px;
 }
 
+.route-card-changes {
+  text-align: center;
+  color: #e69020;
+}
+
 .route-card-top {
+  color: #ffff;
   background-color: #0087c9;
   display: flex;
+  justify-content: space-between;
+}
+
+.route-card-price {
+  font-size: 16pt;
 }
 
 .route-card-info {
   display: flex;
   flex-direction: column;
+  text-align: right;
 }
 
-.route-card-leg:first-child {
-  border-bottom: 1px solid blue;
+.route-card-destinations {
+  border-bottom: 1px solid grey;
+  gap: 5px;
 }
 
 .route-card-destinations,
 .route-card-time-info,
+.route-card-duration,
+.route-card-timing {
+  display: flex;
+}
+
+.route-card-destination-uid,
+.route-card-date {
+  color: #0087c9;
+}
+
+.route-card-timing {
+  justify-content: space-between;
+}
+
+.route-card-time-info {
+  gap: 5px;
+}
+
 .route-card-duration {
   display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.route-card-clock-img > img {
+  width: 10px;
+  height: 10px;
 }

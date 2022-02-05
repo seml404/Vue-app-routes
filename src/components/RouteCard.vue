@@ -4,7 +4,7 @@
       <div><img alt="logo" /></div>
       <div class="route-card-info">
         <p class="route-card-price">
-          {{ this.flightData.price.totalFeeAndTaxes.amount }}
+          {{ +this.flightData.price.totalFeeAndTaxes.amount }} Р
         </p>
         <p>Стоимость для одного взрослого пассажира</p>
       </div>
@@ -17,9 +17,7 @@
       :leg="leg"
     >
     </flight-details>
-    <button class="btn btn-choose">choose</button>
-    <!-- <button @click="handleClick">show flight details</button>
-    <button @click="handleClick2">show more flight details</button> -->
+    <button class="btn btn-choose">ВЫБРАТЬ</button>
   </div>
 </template>
 
